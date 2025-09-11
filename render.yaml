@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: contractbert-api
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: python predict.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.18
