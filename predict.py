@@ -22,19 +22,19 @@ def load_model():
     global model, tokenizer
     
     try:
-        # ContractBERT model identifier - you may need to adjust this
-        model_name = "nlpaueb/legal-bert-base-uncased"  # Common legal BERT model
+        # Use a smaller, more efficient model for Render free tier
+        model_name = "distilbert-base-uncased"  # Smaller, faster model
         
         logger.info(f"Loading model: {model_name}")
         
         # Load tokenizer
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         
-        # Load model
+        # Load model with smaller configuration
         model = AutoModelForSequenceClassification.from_pretrained(
             model_name,
-            num_labels=2,  # Adjust based on your specific ContractBERT model
-            torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32
+            num_labels=2,  # Binary classification
+            dtype=torch.float32  # Use float32 for compatibility
         )
         
         # Move to GPU if available
