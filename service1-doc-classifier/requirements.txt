@@ -1,0 +1,7 @@
+# Service 1: Document Classifier Requirements
+flask>=2.0.0
+transformers>=4.20.0
+torch>=1.12.0
+requests>=2.25.0
+numpy>=1.21.0
+gunicorn>=20.0.0
