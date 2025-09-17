@@ -1,6 +1,6 @@
 """
-Service 1: Document Classification
-Lightweight DistilBERT for document type classification
+Service 1: Document Classification - Ultra Lightweight Version
+Minimal model for document type classification
 Deploy on Render Free Tier
 """
 
@@ -8,8 +8,7 @@ import os
 import json
 import logging
 from flask import Flask, request, jsonify
-from transformers import pipeline
-import torch
+import re
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -17,63 +16,54 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-class DocumentClassifier:
+class LightweightDocumentClassifier:
     def __init__(self):
-        self.model = None
-        self.load_model()
-    
-    def load_model(self):
-        """Load lightweight model for document classification"""
-        try:
-            logger.info("Loading lightweight model for document classification...")
-            # Use a much smaller model that fits in 512MB
-            self.model = pipeline(
-                "text-classification",
-                model="prajjwal1/bert-tiny",  # Tiny BERT model (~50MB)
-                device=0 if torch.cuda.is_available() else -1
-            )
-            logger.info("✅ Lightweight document classifier loaded successfully!")
-        except Exception as e:
-            logger.error(f"❌ Failed to load model: {str(e)}")
-            # Fallback to even simpler approach
-            try:
-                logger.info("Trying fallback model...")
-                self.model = pipeline(
-                    "text-classification",
-                    model="distilbert-base-uncased",  # Original model as fallback
-                    device=0 if torch.cuda.is_available() else -1
-                )
-                logger.info("✅ Fallback model loaded successfully!")
-            except Exception as e2:
-                logger.error(f"❌ Fallback model also failed: {str(e2)}")
-                self.model = None
+        self.legal_keywords = {
+            "contract": ["agreement", "contract", "terms", "conditions", "parties"],
+            "employment": ["employee", "employer", "salary", "job", "work", "employment"],
+            "lease": ["lease", "rent", "tenant", "landlord", "property", "rental"],
+            "nda": ["confidential", "non-disclosure", "secret", "proprietary", "nda"],
+            "service": ["service", "consulting", "professional", "client", "deliverable"]
+        }
+        logger.info("✅ Lightweight document classifier initialized!")
     
     def classify_document(self, text: str) -> dict:
-        """Classify document type"""
-        if not self.model:
-            return {"error": "Model not loaded"}
-        
+        """Classify document type using keyword matching"""
         try:
-            result = self.model(text)
+            text_lower = text.lower()
+            scores = {}
+            
+            for doc_type, keywords in self.legal_keywords.items():
+                score = 0
+                for keyword in keywords:
+                    if keyword in text_lower:
+                        score += 1
+                scores[doc_type] = score / len(keywords)
+            
+            # Get the best match
+            best_type = max(scores, key=scores.get)
+            confidence = scores[best_type]
+            
             return {
-                "document_type": result[0]["label"],
-                "confidence": result[0]["score"],
+                "document_type": best_type,
+                "confidence": confidence,
                 "text_length": len(text),
-                "word_count": len(text.split())
+                "word_count": len(text.split()),
+                "method": "keyword_matching"
             }
         except Exception as e:
             return {"error": f"Classification failed: {str(e)}"}
 
 # Initialize classifier
-classifier = DocumentClassifier()
+classifier = LightweightDocumentClassifier()
 
 @app.route('/')
 def health_check():
     """Health check endpoint"""
     return jsonify({
-        "service": "Document Classifier",
+        "service": "Lightweight Document Classifier",
         "status": "running",
-        "model_loaded": classifier.model is not None
+        "model_loaded": True
     })
 
 @app.route('/classify', methods=['POST'])
