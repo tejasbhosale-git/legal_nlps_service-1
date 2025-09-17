@@ -1,16 +1,16 @@
-# Service 2 - Entity Recognizer Dockerfile
+# Main App Dockerfile (Root deployment)
 FROM python:3.9-slim
 
 WORKDIR /app
 
-# Copy requirements first for better caching
-COPY requirements.txt .
+# Copy main-app requirements
+COPY main-app/requirements.txt ./requirements.txt
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy main-app application code
+COPY main-app/ .
 
 # Expose port
 EXPOSE $PORT
