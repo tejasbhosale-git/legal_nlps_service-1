@@ -1,7 +1,7 @@
 """
 Main Legal AI Pipeline - Orchestration App
 Coordinates all NLP services + Azure OpenAI GPT-4o
-Deploy on Render Free Tier
+Deploy on Railway
 """
 
 import os
@@ -21,7 +21,7 @@ app = Flask(__name__)
 class LegalAIPipeline:
     def __init__(self):
         """Initialize the Legal AI Pipeline"""
-        # Service URLs (update these with your actual Render URLs)
+        # Service URLs (update these with your actual Railway URLs)
         self.doc_classifier_url = os.getenv("DOC_CLASSIFIER_URL", "http://localhost:5000")
         self.entity_recognizer_url = os.getenv("ENTITY_RECOGNIZER_URL", "http://localhost:5001")
         self.clause_analyzer_url = os.getenv("CLAUSE_ANALYZER_URL", "http://localhost:5002")
@@ -375,7 +375,7 @@ def create_gradio_interface():
         # Footer
         gr.Markdown("""
         ---
-        **Legal AI Pipeline** | Multi-Service NLP + LLM Architecture | Powered by Render & Azure OpenAI
+        **Legal AI Pipeline** | Multi-Service NLP + LLM Architecture | Powered by Railway & Azure OpenAI
         """)
     
     return demo

@@ -1,7 +1,7 @@
 """
 Service 2: Entity Recognition
 Lightweight NER model for legal entity extraction
-Deploy on Render Free Tier
+Deploy on Railway
 """
 
 import os

@@ -1,7 +1,7 @@
 """
 Service 1: Document Classification - Ultra Lightweight Version
 Minimal model for document type classification
-Deploy on Render Free Tier
+Deploy on Railway
 """
 
 import os

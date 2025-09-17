@@ -1,7 +1,7 @@
 """
 Service 3: Clause Analysis
 Lightweight model for contract clause classification and risk detection
-Deploy on Render Free Tier
+Deploy on Railway
 """
 
 import os
